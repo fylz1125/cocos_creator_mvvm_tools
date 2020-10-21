@@ -1,7 +1,7 @@
 import VMBase from './VMBase';
 import { StringFormatFunction } from './StringFormat';
 
-const { ccclass, property, menu, executeInEditMode } = cc._decorator;
+const { ccclass, property, menu, executeInEditMode,help } = cc._decorator;
 
 const LABEL_TYPE = {
     CC_LABEL: 'cc.Label',
@@ -19,6 +19,7 @@ const LABEL_TYPE = {
 @ccclass
 @executeInEditMode
 @menu('ModelViewer/VM-Label(文本VM)')
+@help('https://github.com/wsssheep/cocos_creator_mvvm_tools/blob/master/docs/VMLabel.md')
 export default class VMLabel extends VMBase {
 
     @property({
@@ -70,26 +71,14 @@ export default class VMLabel extends VMBase {
                 this.originText = this.getLabelValue();
                 this.parseTemplate();
             }
-            this.onValueInit();
         }
 
     }
 
-
-    // //多路径监听方式
-    // protected setMultPathEvent(enabled: boolean = true) {
-    //     if (CC_EDITOR) return;
-    //     let arr = this.watchPathArr;
-    //     for (let i = 0; i < arr.length; i++) {
-    //         const path = arr[i];
-    //         if (enabled) {
-    //             this.VM.bindPath(path, this.onValueChanged, this);
-    //         } else {
-    //             this.VM.unbindPath(path, this.onValueChanged, this);
-    //         }
-    //     }
-
-    // }
+    start(){
+        if (CC_EDITOR) return;
+        this.onValueInit();
+    }
 
     //解析模板 获取初始格式化字符串格式 的信息
     parseTemplate() {
@@ -114,6 +103,7 @@ export default class VMLabel extends VMBase {
 
     /**获取解析字符串模板后得到的值 */
     getReplaceText() {
+        if(!this.originText)return "";
         let regexAll = /\{\{(.+?)\}\}/g; //匹配： 所有的{{value}}
         let regex = /\{\{(.+?)\}\}/;//匹配： {{value}} 中的 value
         let res = this.originText.match(regexAll);//匹配结果数组 [{{value}}，{{value}}，{{value}}]
